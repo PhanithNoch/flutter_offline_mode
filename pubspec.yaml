@@ -25,9 +25,38 @@ dependencies:
     sdk: flutter
   http: any
   hive: ^1.4.4+1
-  hive_flutter: ^0.3.1
+  hive_flutter: any
   toast: ^0.1.5
   path_provider: ^1.6.5
+  get: ^3.21.3
+  shared_preferences: ^0.5.12+4
+  flutter_flavorizr: ^1.0.9
+  dio: any
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+    ios:
+
+  flavors:
+    dev:
+      app:
+        name: "Development"
+
+      android:
+        applicationId: "testing.offline.mode.test.flutter_offline_mode.dev"
+
+      ios:
+        bundleId: "testing.offline.mode.test.flutter_offline_mode.dev"
+
+    prod:
+      app:
+        name: "Production"
+
+      android:
+        applicationId: "testing.offline.mode.test.flutter_offline_mode"
+      ios:
+        bundleId: "testing.offline.mode.test.flutter_offline_mode"
 
 
 
