@@ -57,7 +57,6 @@ class HomePage extends GetWidget<HomePageController> {
   //         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   //   }
   // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,18 +75,18 @@ class HomePage extends GetWidget<HomePageController> {
                       children: [
                         Expanded(
                             child: RefreshIndicator(
-                          onRefresh: homeClr.updateData,
-                          child: ListView.builder(
-                              itemCount: controller.people.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  child: ListTile(
-                                    title: Text(
-                                        '${controller.people[index].firstName}'),
-                                  ),
-                                );
-                              }),
-                        )),
+                              onRefresh: homeClr.updateData,
+                              child: ListView.builder(
+                                  itemCount: controller.people.length,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      child: ListTile(
+                                        title: Text(
+                                            '${controller.people[index].firstName}'),
+                                      ),
+                                    );
+                                  }),
+                            )),
                       ],
                     );
                   }

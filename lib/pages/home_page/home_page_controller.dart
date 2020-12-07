@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_offline_mode/shared/models/people.dart';
 import 'package:flutter_offline_mode/shared/services/rest_api_service.dart';
 import 'package:get/get.dart';
@@ -5,8 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-enum Status { loading, success, error }
+import 'package:http/http.dart' as http;
 
 class HomePageController extends GetxController {
   List people = [];
@@ -80,4 +81,5 @@ class HomePageController extends GetxController {
       Get.snackbar("message", "no internet connection");
     }
   }
+
 }

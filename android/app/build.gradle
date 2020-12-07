@@ -42,6 +42,22 @@ android {
         }
     }
 
+
+    flavorDimensions "flavor-type"
+
+    productFlavors {
+        dev {
+            dimension "flavor-type"
+            applicationId "testing.offline.mode.test.flutter_offline_mode.dev"
+            resValue "string", "app_name", "Development"
+        }
+        prod {
+            dimension "flavor-type"
+            applicationId "testing.offline.mode.test.flutter_offline_mode"
+            resValue "string", "app_name", "Production"
+        }
+    }
+
     compileSdkVersion 29
 
     sourceSets {
@@ -77,4 +93,5 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
 
