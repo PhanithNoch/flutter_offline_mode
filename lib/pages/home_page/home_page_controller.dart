@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_offline_mode/shared/models/people.dart';
 import 'package:flutter_offline_mode/shared/services/rest_api_service.dart';
 import 'package:get/get.dart';
@@ -5,79 +7,84 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-enum Status { loading, success, error }
+import 'package:http/http.dart' as http;
 
 class HomePageController extends GetxController {
-  List people = [];
-  // final status = Status.loading.obs;
+  List data = [];
   Box box;
 
   @override
-  Future<void> onInit() async {
+  void onInit() async {
     await getAllData();
-  }
 
-  // Future<void> getData() async {
-  //   status(Status.loading);
-  //   this._people = await RestAPIService.instance.getPeople();
-  //   print(_people);
-  //   status(Status.success);
-  //   update();
-  // }
-  //
-  // Future<void> addPeople(Data people) async {
-  //   Future<String> response = RestAPIService.instance.addPeople(people);
-  //   response.then((String value) => print(value));
-  //   update();
-  // }
-  //
-  // Future<void> deletePeople(int userId) {
-  //   Future<String> response = RestAPIService.instance.deletePeople(userId);
-  //   response.then((String value) => print(value));
-  // }
+    super.onInit();
+  }
 
   Future openBox() async {
     var dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
     box = await Hive.openBox('data');
-    return;
   }
 
-  Future getAllData() async {
-    try {
-      await openBox();
-      this.people = await RestAPIService.instance.getPeople();
-      await putData(people); // need
-    } catch (SocketException) {
-      print('no internet');
-    }
-    print("box ${box.values}");
-    // get data from DB
-    // List<Data> myMap = box.toMap().values.toList();
-    List<dynamic> myMap = box.toMap().values.toList();
-    if (myMap.isEmpty) {
-      people.add("empty");
-    } else {
-      // has data in storage
-      people = myMap;
-    }
-  }
-
-  Future putData(List<Data> data) async {
+  Future putData(data) async {
     await box.clear();
     for (var d in data) {
       box.add(d);
     }
   }
 
+  Future<void> deleteData(int id) async {
+    print(id);
+
+ try{
+   String url = "https://peopleinfoapi.herokuapp.com/api/people/$id";
+   print(url);
+   var response = await http.delete("$url}",headers: {
+     "Content-Type": "application/json",
+     "Accept": "application/json"
+   });
+   print(response.statusCode);
+ }catch(ex)
+    {
+      print(ex);
+    }
+    update();
+  }
+
   Future<void> updateData() async {
+    String url = "https://peopleinfoapi.herokuapp.com/api/people";
     try {
-      this.people = await RestAPIService.instance.getPeople();
-      await putData(people);
+      var response = await http.get(url);
+      var _jsonDecode = jsonDecode(response.body)['data'];
+
+      await putData(_jsonDecode);
     } catch (SocketException) {
       print('no internet');
-      Get.snackbar("message", "no internet connection");
+    }
+    update();
+  }
+
+  Future<void> getAllData() async {
+    await openBox();
+    String url = "https://peopleinfoapi.herokuapp.com/api/people";
+
+    try {
+      var response = await http.get(url);
+      print("status $response");
+      var _jsonDecode = jsonDecode(response.body)['data'];
+
+      await putData(_jsonDecode);
+      update();
+    } catch (SocketException) {
+      print('no internet');
+    }
+    // get data from DB
+    var myMap = box.toMap().values.toList();
+    if (myMap.isEmpty) {
+      data.add('empty');
+    } else {
+      data = myMap;
+      update();
     }
   }
 }

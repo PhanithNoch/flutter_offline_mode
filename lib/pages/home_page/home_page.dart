@@ -3,7 +3,7 @@ import 'package:flutter_offline_mode/shared/models/people.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends GetWidget<HomePageController> {
+class HomePage extends StatelessWidget {
   // List data = [];
   // Box box;
   //
@@ -64,37 +64,47 @@ class HomePage extends GetWidget<HomePageController> {
       appBar: AppBar(
         title: Text("List People"),
       ),
-      body: Center(
-          child: GetBuilder<HomePageController>(
-              init: HomePageController(),
-              builder: (homeClr) {
-                if (controller.people.isNotEmpty) {
-                  if (controller.people.contains('empty')) {
-                    return Text('No data');
-                  } else {
-                    return Column(
-                      children: [
-                        Expanded(
-                            child: RefreshIndicator(
-                          onRefresh: homeClr.updateData,
-                          child: ListView.builder(
-                              itemCount: controller.people.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  child: ListTile(
-                                    title: Text(
-                                        '${controller.people[index].firstName}'),
-                                  ),
-                                );
-                              }),
-                        )),
-                      ],
-                    );
-                  }
-                } else {
-                  return CircularProgressIndicator();
-                }
-              })),
+      body: GetBuilder<HomePageController>(
+        init: HomePageController(),
+        builder: (controller) {
+          if (controller.data != null) {
+            if (controller.data.contains('empty')) {
+              return Text('empty');
+            } else {
+              return RefreshIndicator(
+                onRefresh: controller.updateData,
+                child: ListView.builder(
+                    itemCount: controller.data.length,
+                    itemBuilder: (ctxt, index) {
+                      return Card(
+                        child: ListTile(
+                          title:
+                              Text('${controller.data[index]['first_name']}'),
+                          trailing: IconButton(
+                            icon: Icon(Icons.delete,color: Colors.red,),
+                            onPressed: (){
+                              controller.deleteData(controller.data[index]['id']);
+                            },
+                          ),
+                        ),
+                      );
+                    }),
+              );
+            }
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: (){
+
+        },
+      ),
     );
+
   }
 }
